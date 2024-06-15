@@ -1,0 +1,30 @@
+﻿@model Assignment08June.Models.Employee
+
+@{
+    ViewBag.Title = "Delete Employee";
+}
+
+<h2>Delete Employee</h2>
+
+<div>
+    <h4>Are you sure you want to delete this employee?</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Firstname)
+        </dd>
+        <!-- Add similar lines for other properties if needed -->
+    </dl>
+
+    @using (Html.BeginForm("Delete", "Employee", new { id = Model.Id }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            @Html.ActionLink("Cancel", "List", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

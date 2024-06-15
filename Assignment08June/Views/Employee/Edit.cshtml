@@ -1,0 +1,138 @@
+﻿@model Assignment08June.Models.Employee
+
+@{
+    ViewBag.Title = "Edit Employee";
+}
+
+<h2>Edit Employee</h2>
+
+@using (Html.BeginForm("Edit", "Employee", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Employee</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Firstname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Firstname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Lastname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phonenumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phonenumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Phonenumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DesignationIdRef, "Designation", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.DesignationIdRef, (IEnumerable<SelectListItem>)ViewBag.Designations, "Select Designation", new { @class = "form-control", id = "DesignationIdRef" })
+                @Html.ValidationMessageFor(model => model.DesignationIdRef, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GradeIdref, "Grade", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.GradeIdref, (IEnumerable<SelectListItem>)ViewBag.Grades, "Select Grade", new { @class = "form-control", id = "GradeIdref" })
+                @Html.ValidationMessageFor(model => model.GradeIdref, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $('#Phonenumber').on('input', function () {
+                    this.value = this.value.replace(/\D/g, '').substring(0, 10);
+                });
+            });
+            $("#DesignationIdRef").change(function () {
+                var designationId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetGrades", "Employee")',
+                    type: "GET",
+                    data: { designationId: designationId },
+                    success: function (data) {
+                        var gradeDropdown = $("#GradeIdref");
+                        gradeDropdown.empty();
+                        $.each(data, function (index, item) {
+                            gradeDropdown.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                    }
+                });
+            });
+
+            // Trigger change event to populate grades dropdown on page load if there's a selected designation
+            $("#DesignationIdRef").trigger('change');
+        });
+    </script>
+}
+
+<style>
+    .form-horizontal .form-group {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .form-horizontal .control-label {
+        text-align: right;
+    }
+
+    .text-danger {
+        color: #a94442;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+</style>
